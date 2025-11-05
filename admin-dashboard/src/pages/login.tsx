@@ -13,7 +13,7 @@ const Login = () => {
     setMessage(null);
 
     try {
-      const res = await axios.post(import.meta.env.BACKEND_URL+"/api/users/login", {
+      const res = await axios.post(import.meta.env.VITE_BACKEND_URL+"/api/users/login", {
         email,
         password,
       });
