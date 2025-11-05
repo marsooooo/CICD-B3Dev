@@ -8,7 +8,7 @@ on:
 env:
   FRONTEND_BUILD_DIR: './admin-dashboard/dist'
   VPS_TARGET_DIR: ${{ secrets.VPS_TARGET_DIR }}
-  PM2_APP_NAME: 'frontend-app'
+  PM2_APP_NAME: 'update-build-CICD-daily'
 
 jobs:
   frontend:
