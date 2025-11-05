@@ -6,7 +6,7 @@ on:
     tags: ['*']
 
 env:
-  FRONTEND_BUILD_DIR: './frontend/build'
+  FRONTEND_BUILD_DIR: './admmin-dashboard/build'
   VPS_TARGET_DIR: ${{ secrets.VPS_TARGET_DIR }}
   PM2_APP_NAME: 'frontend-app'
 
@@ -23,7 +23,7 @@ jobs:
           node-version: '18'
 
       - name: Build frontend
-        working-directory: frontend
+        working-directory: admin-dashboard
         run: |
           npm ci
           npm run build
