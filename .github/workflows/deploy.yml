@@ -1,0 +1,44 @@
+name: Deploy Fullstack App
+
+on:
+  push:
+    branches: [main]
+    tags: ['*']
+
+env:
+  FRONTEND_BUILD_DIR: './frontend/build'
+  VPS_TARGET_DIR: ${{ secrets.VPS_TARGET_DIR }}
+  PM2_APP_NAME: 'frontend-app'
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Setup SSH Key
+        run: |
+          echo "${{ secrets.VPS_SSH_KEY }}" > /tmp/deploy_key
+          chmod 600 /tmp/deploy_key
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+
+      - name: Rsync frontend to VPS
+        run: |
+          rsync -e "ssh -i /tmp/deploy_key -o StrictHostKeyChecking=yes" -az --delete $FRONTEND_BUILD_DIR ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:$VPS_TARGET_DIR
+
+      - name: Restart PM2 frontend service
+        run: |
+          ssh -i /tmp/deploy_key -o StrictHostKeyChecking=yes ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "pm2 reload $PM2_APP_NAME --update-env"
