@@ -1,9 +1,4 @@
-interface CardProps {
-  title: string;
-  value: string | number;
-}
-
-export default function Card({ title, value }: CardProps) {
+export default function Card({ title, value }: { title: string; value: string }) {
   return (
     <div className="bg-white shadow-md rounded-xl p-4 text-center flex flex-col justify-center">
       <h3 className="text-gray-500">{title}</h3>
