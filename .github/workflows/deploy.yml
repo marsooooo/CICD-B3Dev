@@ -26,6 +26,7 @@ jobs:
         working-directory: admin-dashboard
         run: |
           npm ci
+          npm i --save-dev @types/node
           npm run build
 
       - name: Setup SSH Key
