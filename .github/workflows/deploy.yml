@@ -6,7 +6,7 @@ on:
     tags: ['*']
 
 env:
-  FRONTEND_BUILD_DIR: './admmin-dashboard/build'
+  FRONTEND_BUILD_DIR: './admin-dashboard/dist'
   VPS_TARGET_DIR: ${{ secrets.VPS_TARGET_DIR }}
   PM2_APP_NAME: 'frontend-app'
 
