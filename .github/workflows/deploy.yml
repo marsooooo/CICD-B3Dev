@@ -1,4 +1,4 @@
-name: Deploy Fullstack App v0.3
+name: Deploy Fullstack App v0.4
 
 on:
   push:
