@@ -1,77 +1,42 @@
-# API_Jeu
+# Fullstack Deployment Workflow
 
-API_Jeu est un projet d’API pour la gestion d’un jeu, construit principalement en JavaScript et TypeScript. Ce projet adopte une architecture modulaire avec des dossiers dédiés aux contrôleurs, modèles, middlewares, et un tableau de bord d’administration.
+## Description
 
-## Table des matières
+Ce projet utilise un workflow GitHub Actions (`deploy-fullstack.yml`) pour déployer automatiquement le frontend et le backend de l’application.  
 
-- [Fonctionnalités](#fonctionnalités)
-- [Structure du projet](#structure-du-projet)
-- [Installation](#installation)
-- [Utilisation](#utilisation)
-- [Technologies utilisées](#technologies-utilisées)
-- [Contribuer](#contribuer)
-- [Auteur](#auteur)
+### Fonctionnement du workflow
 
-## Fonctionnalités
+1. **Frontend**  
+   - Build du projet React situé dans `admin-dashboard`.  
+   - Transfert des fichiers build vers le VPS via `rsync`.  
+   - Redémarrage du service PM2 `update-build-CICD-daily` pour mettre à jour le frontend.
 
-- Gestion des routes pour le jeu
-- Contrôleurs dédiés à la logique métier
-- Modèles pour la gestion des données
-- Middlewares pour la sécurité et la validation
-- Tableau de bord admin (admin-dashboard)
-- Documentation et notes disponibles dans `note.txt`
+2. **Backend**  
+   - Installation des dépendances Node.js dans `backend-API`.  
+   - Déploiement sur Render via l’API Render, en déclenchant un nouveau déploiement et en vidant le cache si nécessaire.  
+   - Les secrets GitHub (`RENDER_API_KEY`, `RENDER_SERVICE_ID`, `MONGO_URI`, `JWT_SECRET`) sont utilisés pour sécuriser l’accès au backend et à la base de données.
 
-## Structure du projet
+---
 
-```
-.
-├── admin-dashboard/      # Tableau de bord d’administration
-├── controllers/          # Logique métier / contrôleurs de l’API
-├── middlewares/          # Middlewares pour la gestion des requêtes
-├── models/               # Modèles de données
-├── routes/               # Définition des routes de l’API
-├── index.js              # Point d’entrée principal de l’application
-├── package.json          # Dépendances et scripts npm
-├── package-lock.json     # Verrouillage des dépendances
-├── .gitignore            # Fichiers à ignorer par git
-├── note.txt              # Notes et documentation additionnelle
-```
+## Utilisation de l’application
 
-## Installation
+1. Accéder à l’application frontend :  
+   - https://cicd.marceau-tison.com
 
-1. Clone le dépôt :
-   ```bash
-   git clone https://github.com/Tidragon-coder/API_Jeu.git
-   cd API_Jeu
-   ```
+2. **Inscription et connexion**  
+- Pour utiliser l’application, l’utilisateur doit se **register** puis se **login**.  
+- Après connexion, accéder au dashboard :  
+  ```
+  https://cicd.marceau-tison.com/dashboard
+  ```
 
-2. Installe les dépendances :
-   ```bash
-   npm install
-   ```
+3. **Comptes admin**  
+- Par défaut, tout nouvel utilisateur est créé avec le rôle `user`.  
+- Pour créer un compte avec le rôle `admin`, la requête de création doit inclure explicitement `"role": "admin"` et être effectuée depuis l’extérieur de l’application (ex. via API ou base de données).  
 
-## Utilisation
+---
 
-Lance le serveur avec Node.js :
-```bash
-node index.js
-```
-Ou, si tu utilises un gestionnaire de processus comme `nodemon` :
-```bash
-nodemon index.js
-```
+## Remarques
 
-## Technologies utilisées
-
-- **JavaScript** (53.7%)
-- **TypeScript** (43.5%)
-- **CSS** (1.8%)
-- **HTML** (1%)
-
-## Contribuer
-
-Les contributions sont les bienvenues ! N’hésite pas à ouvrir des issues ou à proposer des pull requests.
-
-## Auteur
-
-- [Tidragon-coder](https://github.com/Tidragon-coder)
+- Les variables d’environnement (MongoDB, JWT, API Render) doivent être correctement configurées dans GitHub Actions et Render pour que le déploiement fonctionne.  
+- Toute modification du frontend ou du backend sur la branche `main` déclenchera automatiquement le workflow de déploiement.
