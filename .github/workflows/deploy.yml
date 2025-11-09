@@ -1,4 +1,4 @@
-name: Deploy Fullstack App v0.5
+name: Deploy Fullstack App v0.6
 
 on:
   push:
@@ -10,7 +10,7 @@ env:
   PM2_APP_NAME: 'update-build-CICD-daily'
   RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
   RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
-  VITE_APP_API_URL: "https://cicd-b3dev.onrender.com/api"
+  REACT_APP_API_URL: "https://cicd-b3dev.onrender.com/api"
 
 jobs:
   frontend:
@@ -28,7 +28,7 @@ jobs:
       - name: Build frontend
         working-directory: admin-dashboard
         run: |
-          npm ci
+          npm install     # Utilise npm install si pas de package-lock.json
           npm run build
 
       - name: Setup SSH Key
@@ -60,9 +60,11 @@ jobs:
           node-version: '24'
 
       - name: Install dependencies
-        run: npm ci
+        working-directory: backend-API
+        run: npm install
 
       - name: Deploy to Render
+        working-directory: backend-API
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
           RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
@@ -74,7 +76,5 @@ jobs:
             -H "Authorization: Bearer $RENDER_API_KEY" \
             -H "Accept: application/json" \
             -H "Content-Type: application/json" \
-            -d '{
-              "clearCache": true
-            }' \
+            -d '{"clearCache": true}' \
             "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys"
